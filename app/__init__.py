@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, request, render_template, g, flash, url_for, redirect
 from contextlib import closing
 from datetime import datetime, date, timedelta
+import json
 
 # configuration - figure out later how to port into separate file
 DATABASE = 'app.db'
@@ -24,9 +25,8 @@ def index():
 def show_movies():
 	"""Renders the data from the MovieRanking table."""
 
-	cur = g.db.execute('select rank, standard_title from MovieRanking where rank < ?', [100])
-	data = [row for row in cur.fetchall()]
-	# data = [dict(rank=row[0], movie=row[9], date=row[6]) for row in cur.fetchall()]
+	cur = g.db.execute('select date, title_key, standard_title, rank  from MovieRanking where rank < ?', [100])
+	data = json.dumps([dict(date=row[0], title_key=row[1], standard_title=row[2], rank=row[3]) for row in cur.fetchall()])
 
 	return render_template('index.html', data=data)
 
