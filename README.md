@@ -3,8 +3,8 @@ d3.js visualization of the IMDb Top 250 since its beginning.
 
 1. ~~Install requirements~~
 2. ~~Create requirements.txt~~
-3. Create folder structure (app, static, templates)
-4. Write app initialization code
+3. ~~Create folder structure (app, static, templates)~~
+4. ~~Write app initialization code~~
 5. Write db-specific code (for sqlite3 for now)
 6. Insert test data into db (using pandas)
 7. Connect test data to d3 visualization
