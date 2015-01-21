@@ -62,3 +62,6 @@ db_*
 
 # configuration
 config.py
+
+# csv data
+*.csv
