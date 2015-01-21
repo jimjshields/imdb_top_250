@@ -9,7 +9,7 @@ d3.js visualization of the IMDb Top 250 since its beginning.
 6. ~~Insert test data into db (using pandas)~~
 7. ~~Connect test data to d3 visualization~~
 8. Fix any d3/js bugs
-  * Back to Full Chart doesn't work
+  * ~~Back to Full Chart doesn't work~~
   * It's extremely slow
 9. ~~Insert real data into db~~
 10. ~~Test real data w/ d3~~
