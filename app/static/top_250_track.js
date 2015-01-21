@@ -102,10 +102,14 @@ movie_data.forEach(function(d) {
 	d.date = parseDate(d.date);
 });
 
+// console.log(movie_data)
+
 // nest the data - make the movies the keys in an array of movie objects
 var nest = d3.nest()
 	.key(function(d) { return d.imdb_id; })
 	.entries(movie_data);
+
+console.log(nest)
 
 // add the combo of key and title to an array of arrays - this could definitely be done better
 dataTable = []
