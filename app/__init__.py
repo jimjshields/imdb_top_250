@@ -25,8 +25,8 @@ def index():
 def show_movies():
 	"""Renders the data from the MovieRanking table."""
 
-	cur = g.db.execute('select date, title_key, standard_title, rank  from MovieRanking where rank < ?', [100])
-	data = json.dumps([dict(date=row[0], title_key=row[1], standard_title=row[2], rank=row[3]) for row in cur.fetchall()])
+	cur = g.db.execute('select date, imdb_id, title_key, standard_title, rank  from MovieRanking where rank < ?', [100])
+	data = [dict(date=row[0], imdb_id=row[1], title_key=row[2], standard_title=row[3], rank=row[4]) for row in cur.fetchall()]
 
 	return render_template('index.html', data=data)
 
