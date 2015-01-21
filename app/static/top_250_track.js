@@ -6,7 +6,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
 	height = 500 - margin.top - margin.bottom;
 
 // takes in date from data, returns js-compatible date
-var parseDate = d3.time.format("%d-%b-%y").parse;
+var parseDate = d3.time.format("%Y-%m-%d %X").parse;
 
 var options = {};
 options.xRange = d3.time.scale().range([0, width]);
@@ -99,6 +99,7 @@ movie_data.forEach(function(d) {
 	// d.year = +d.year;
 	// d.num_votes = +d.num_votes;
 	// d.imdb_rating = +d.imdb_rating;
+	console.log(d.date)
 	d.date = parseDate(d.date);
 });
 
