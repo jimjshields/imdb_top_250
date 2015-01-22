@@ -8,7 +8,7 @@ var margin = {
 				left: 50
 		},
     width = (0.7 * window.innerWidth) - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 700 - margin.top - margin.bottom;
 
 // Function that parses a date formatted as "YYYY-MM-DD HH:MM:SS".
 var parseDate = d3.time.format("%Y-%m-%d %X").parse;
