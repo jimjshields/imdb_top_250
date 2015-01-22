@@ -30,15 +30,6 @@ def connect_db():
 	"""Connects to the configured database."""
 	return sqlite3.connect(app.config['DATABASE'])
 
-# not actually needed - and in fact is dangerous - b/c we already have a db
-# def init_db():
-# 	"""Initializes the database with the provided schema."""
-# 	with closing(connect_db()) as db:
-# 		with app.open_resource('schema.sql', mode='r') as f:
-# 			db.cursor().executescript(f.read())
-# 		db.commit()
-# 		print "Initialized the database."
-
 @app.before_request
 def before_request():
 	"""Before the db request, connects to the database."""
