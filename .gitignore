@@ -65,3 +65,4 @@ config.py
 
 # csv data
 *.csv
+csv*
