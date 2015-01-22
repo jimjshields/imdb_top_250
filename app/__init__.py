@@ -30,13 +30,14 @@ def connect_db():
 	"""Connects to the configured database."""
 	return sqlite3.connect(app.config['DATABASE'])
 
-def init_db():
-	"""Initializes the database with the provided schema."""
-	with closing(connect_db()) as db:
-		with app.open_resource('schema.sql', mode='r') as f:
-			db.cursor().executescript(f.read())
-		db.commit()
-		print "Initialized the database."
+# not actually needed - and in fact is dangerous - b/c we already have a db
+# def init_db():
+# 	"""Initializes the database with the provided schema."""
+# 	with closing(connect_db()) as db:
+# 		with app.open_resource('schema.sql', mode='r') as f:
+# 			db.cursor().executescript(f.read())
+# 		db.commit()
+# 		print "Initialized the database."
 
 @app.before_request
 def before_request():
@@ -52,9 +53,6 @@ def teardown_request(exception):
 		db.close()
 
 ### utility functions ###
-
-def stringify_date(date):
-	return date.strftime('%m-%d-%Y')
 
 if __name__ == '__main__':
 	app.run()
