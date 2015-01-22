@@ -13,7 +13,7 @@ d3.js visualization of the IMDb Top 250 since its beginning.
   * It's extremely slow
 9. ~~Insert real data into db~~
 10. ~~Test real data w/ d3~~
-11. Refactor/clean up Flask code
+11. ~~Refactor/clean up Flask code~~
 12. Refactor d3/js
 13. Try moving to PostgreSQL
 14. Deploy to AWS or Heroku
