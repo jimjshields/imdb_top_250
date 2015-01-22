@@ -2,7 +2,6 @@ import sqlite3
 from flask import Flask, request, render_template, g, flash, url_for, redirect
 from contextlib import closing
 from datetime import datetime, date, timedelta
-import json
 
 # configuration - figure out later how to port into separate file
 DATABASE = 'app.db'
@@ -17,15 +16,10 @@ app.config.from_object(__name__)
 ### url routing/view functions ###
 
 @app.route('/')
+@app.route('/movies')
 def index():
 	"""Renders the index template."""
-	return render_template("index.html", data="testing")
-
-@app.route('/movies')
-def show_movies():
-	"""Renders the data from the MovieRanking table."""
-
-	cur = g.db.execute('select date, imdb_id, title_key, standard_title, rank from MovieRanking where date between "2013-07-01" and "2014-06-01"')
+	cur = g.db.execute('select date, imdb_id, title_key, standard_title, rank from MovieRanking')
 	data = [dict(date=row[0], imdb_id=row[1], title_key=row[2], standard_title=row[3], rank=row[4]) for row in cur.fetchall()]
 
 	return render_template('index.html', data=data)
