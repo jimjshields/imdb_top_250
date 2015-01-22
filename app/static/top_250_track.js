@@ -120,7 +120,6 @@ movie_data.forEach(function(d) {
     // d.year = +d.year;
     // d.num_votes = +d.num_votes;
     // d.imdb_rating = +d.imdb_rating;
-    // console.log(d.date)
     d.date = parseDate(d.date);
 });
 
@@ -174,7 +173,6 @@ var fullChartButton = d3.select("#fullChart")
 
 fullChartButton
 		.on("click", function(d) {
-		    console.log("clicked!");
 		    drawFullChart(movie_data, nest, svg, clickedMovies, line, options);
 		});
 
@@ -257,8 +255,6 @@ tr
 				        filteredData = nest.filter(function(d) {
 				            return filteredMovies.indexOf(d.key) > -1;
 				        });
-
-				        console.log(filteredData);
 
 				        svg.selectAll("*").remove();
 
