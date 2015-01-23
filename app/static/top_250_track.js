@@ -90,7 +90,7 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, options) {
                 };
             var movie = d3.select(this).attr("class").split(" ")[1]
             d3.select("#tooltip")
-                .text(key_data[movie]["standard_title"])
+                .text(keyData[movie]["standardTitle"])
                 .style("left", p.x + 375 + "px")
                 .style("top", p.y - 25 + "px")
                 .style("opacity", "1");
@@ -100,14 +100,14 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, options) {
                 .style("opacity", "1");
         })
 
-		    .on("mouseout", function(d) {
-		        d3.select("#tooltip")
-		            .style("opacity", "0")
-		        d3.select(this)
-		            .style("stroke-width", ".5px")
-		            .style("stroke", "grey")
-		            .style("opacity", "0.5")
-		    });
+	    .on("mouseout", function(d) {
+	        d3.select("#tooltip")
+	            .style("opacity", "0")
+	        d3.select(this)
+	            .style("stroke-width", ".5px")
+	            .style("stroke", "grey")
+	            .style("opacity", "0.5")
+	    });
 };
 
 // DATA LOADING
@@ -115,8 +115,11 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, options) {
 // loads data, makes it available to functions below as a set of objects
 // d3.csv("took_250_combined.csv", function(error, data) {
 // coerces the data types correctly
-movie_data.forEach(function(d) {
+movieData.forEach(function(d) {
     d.rank = +d.rank;
+    // Keep consistent variable case.
+    d.imdbId = d.imdb_id
+    d.standardTitle = d.standard_title
     // d.year = +d.year;
     // d.num_votes = +d.num_votes;
     // d.imdb_rating = +d.imdb_rating;
@@ -126,29 +129,29 @@ movie_data.forEach(function(d) {
 // nest the data - make the movies the keys in an array of movie objects
 var nest = d3.nest()
     .key(function(d) {
-        return d.imdb_id;
+        return d.imdbId;
     })
-    .entries(movie_data);
+    .entries(movieData);
 
 // add the combo of key and title to an array of arrays - this could definitely be done better
-dataTable = []
+var dataTable = []
 nest.forEach(function(d) {
     // var date = d.values[0].date
     // var formattedDate = date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear();
 
-    dataTable.push([d.key, d.values[0].standard_title]) //, d.values[0].rank, formattedDate, , d.values[0].year
+    dataTable.push([d.key, d.values[0].standardTitle]) //, d.values[0].rank, formattedDate, , d.values[0].year
 })
 
-// add the combo of title and imdb_id to an object - could be done better
-title_data = {}
+// add the combo of title and imdbId to an object - could be done better
+var titleData = {}
 nest.forEach(function(d) {
-    title_data[d.values[0]["standard_title"]] = d.values[0]["imdb_id"]
+    titleData[d.values[0]["standardTitle"]] = d.values[0]["imdbId"]
 });
 
 // add the combo of title and key to an object - could be done better
-key_data = {}
+var keyData = {}
 nest.forEach(function(d) {
-    key_data[d.values[0]["imdb_id"]] = d.values[0]
+    keyData[d.values[0]["imdbId"]] = d.values[0]
 });
 
 // for each movie title, add a row to the table
@@ -166,14 +169,14 @@ dataTable.forEach(function(d) {
 });
 
 // call this on opening the page
-drawFullChart(movie_data, nest, svg, clickedMovies, line, options);
+drawFullChart(movieData, nest, svg, clickedMovies, line, options);
 
 // allow the full chart button to draw it again after being filtered
 var fullChartButton = d3.select("#fullChart")
 
 fullChartButton
 		.on("click", function(d) {
-		    drawFullChart(movie_data, nest, svg, clickedMovies, line, options);
+		    drawFullChart(movieData, nest, svg, clickedMovies, line, options);
 		});
 
 // store all of the rows
@@ -192,148 +195,148 @@ tr
             .style("opacity", "1");
     })
 
-		.on("mouseout", function(d) {
-		    var movie = d3.select(this).attr("class")
-		    svg.select("." + movie)
-		        .style("stroke", "grey")
-		        .style("stroke-width", ".5px")
-		        .style("opacity", "0.5");
-		})
+	.on("mouseout", function(d) {
+	    var movie = d3.select(this).attr("class")
+	    svg.select("." + movie)
+	        .style("stroke", "grey")
+	        .style("stroke-width", ".5px")
+	        .style("opacity", "0.5");
+	})
 
-		// if you click on a row, it adds it to the selected movies table
-		.on("click", function(d) {
-		    var movie = d3.select(this).attr("class");
-		    var movieText = d3.select(this).text()
-		    var movieEl = svg.select("." + movie)
-		    var clicked = d3.select(this).attr("class").split(" ")[1];
+	// if you click on a row, it adds it to the selected movies table
+	.on("click", function(d) {
+	    var movie = d3.select(this).attr("class");
+	    var movieText = d3.select(this).text()
+	    var movieEl = svg.select("." + movie)
+	    var clicked = d3.select(this).attr("class").split(" ")[1];
 
-		    // if it's already been clicked, get rid of it
-		    if (clicked == "clicked") {
-		        d3.select(this).classed("clicked", false)
-		        movieEl.classed("lineClicked", false)
-		        clickedMovies.splice(clickedMovies.indexOf(movieText), 1)
-		            // otherwise keep it in there
-		    } else {
-		        d3.select(this).classed("clicked", true)
-		        movieEl.classed("lineClicked", true)
-		        clickedMovies.push(movieText)
-		    };
+	    // if it's already been clicked, get rid of it
+	    if (clicked == "clicked") {
+	        d3.select(this).classed("clicked", false)
+	        movieEl.classed("lineClicked", false)
+	        clickedMovies.splice(clickedMovies.indexOf(movieText), 1)
+	            // otherwise keep it in there
+	    } else {
+	        d3.select(this).classed("clicked", true)
+	        movieEl.classed("lineClicked", true)
+	        clickedMovies.push(movieText)
+	    };
 
-		    // every time one is clicked, rebuild the selected movies
-		    d3.selectAll("#clickedMovies > tr").remove()
-		    clickedMovies.forEach(function(d) {
-		        d3.select("#clickedMovies")
-		            .append("tr")
-		            .text(d)
-		            .attr("class", title_data[d]);
-		    });
+	    // every time one is clicked, rebuild the selected movies
+	    d3.selectAll("#clickedMovies > tr").remove()
+	    clickedMovies.forEach(function(d) {
+	        d3.select("#clickedMovies")
+	            .append("tr")
+	            .text(d)
+	            .attr("class", titleData[d]);
+	    });
 
-		    // highlight lines even more clearly if selected movie is hovered over
-		    var clickedTr = d3.selectAll("#clickedMovies > tr");
+	    // highlight lines even more clearly if selected movie is hovered over
+	    var clickedTr = d3.selectAll("#clickedMovies > tr");
 
-		    clickedTr
-		    		.on("mousemove", function(d) {
-		            var movie = d3.select(this).attr("class");
-		            svg.select("." + movie)
-		                .style("stroke", "red")
+	    clickedTr
+    		.on("mousemove", function(d) {
+	            var movie = d3.select(this).attr("class");
+	            svg.select("." + movie)
+	                .style("stroke", "red")
+	        })
+	        .on("mouseout", function(d) {
+	            var movie = d3.select(this).attr("class")
+	            svg.select("." + movie)
+	                .style("stroke", "grey")
+	        });
+
+	    var filterButton = d3.select("#filter")
+
+	    filterButton
+    		.on("click", function(d) {
+
+		        var filteredMovies = [];
+		        clickedMovies.forEach(function(d) {
+		            filteredMovies.push(titleData[d])
 		        })
-		        .on("mouseout", function(d) {
-		            var movie = d3.select(this).attr("class")
-		            svg.select("." + movie)
-		                .style("stroke", "grey")
+		        filteredData = nest.filter(function(d) {
+		            return filteredMovies.indexOf(d.key) > -1;
 		        });
 
-		    var filterButton = d3.select("#filter")
+		        svg.selectAll("*").remove();
 
-		    filterButton
-		    		.on("click", function(d) {
+		        var dates = [];
+		        var ranks = [];
 
-				        var filteredMovies = [];
-				        clickedMovies.forEach(function(d) {
-				            filteredMovies.push(title_data[d])
-				        })
-				        filteredData = nest.filter(function(d) {
-				            return filteredMovies.indexOf(d.key) > -1;
-				        });
+		        filteredData.forEach(function(d) {
+		            d.values.forEach(function(i) {
+		                dates.push(i["date"]);
+		                ranks.push(i["rank"]);
+		            });
+		        });
 
-				        svg.selectAll("*").remove();
+		        options.xRange.domain(d3.extent(dates));
+		        options.yRange.domain([d3.max(ranks), d3.min(ranks)]);
 
-				        var dates = [];
-				        var ranks = [];
+		        // adding the x axis and all of its attributes
+		        svg.append("g")
+		            .attr("class", "x axis")
+		            .attr("transform", "translate(0," + height + ")")
+		            .call(options.xAxis);
 
-				        filteredData.forEach(function(d) {
-				            d.values.forEach(function(i) {
-				                dates.push(i["date"]);
-				                ranks.push(i["rank"]);
-				            });
-				        });
+		        // adding the y axis and all of its attributes
+		        svg.append("g")
+		            .attr("class", "y axis")
+		            .call(options.yAxis)
+		            .append("text")
+		            .attr("transform", "rotate(-90)")
+		            .attr("y", 6)
+		            .attr("dy", ".71em")
+		            .style("text-anchor", "end")
+		            .text("Top 250 Rank");
 
-				        options.xRange.domain(d3.extent(dates));
-				        options.yRange.domain([d3.max(ranks), d3.min(ranks)]);
+		        // better interpolation for lines when filtered - too slow for the whole graph
+		        var lineFiltered = d3.svg.line()
+		            .defined(function(d) {
+		                return d.rank != null;
+		            })
+		            .interpolate("basis")
+		            .x(function(d) {
+		                return options.xRange(d.date);
+		            })
+		            .y(function(d) {
+		                return options.yRange(d.rank);
+		            });
 
-				        // adding the x axis and all of its attributes
-				        svg.append("g")
-				            .attr("class", "x axis")
-				            .attr("transform", "translate(0," + height + ")")
-				            .call(options.xAxis);
+		        filteredData.forEach(function(d) {
+		            svg.append("path")
+		                .datum(d.values)
+		                .attr("class", "line " + d.key + " lineFiltered")
+		                .attr("d", lineFiltered);
+		        });
 
-				        // adding the y axis and all of its attributes
-				        svg.append("g")
-				            .attr("class", "y axis")
-				            .call(options.yAxis)
-				            .append("text")
-				            .attr("transform", "rotate(-90)")
-				            .attr("y", 6)
-				            .attr("dy", ".71em")
-				            .style("text-anchor", "end")
-				            .text("Top 250 Rank");
+		        var lines = d3.selectAll(".line")
 
-				        // better interpolation for lines when filtered - too slow for the whole graph
-				        var lineFiltered = d3.svg.line()
-				            .defined(function(d) {
-				                return d.rank != null;
-				            })
-				            .interpolate("basis")
-				            .x(function(d) {
-				                return options.xRange(d.date);
-				            })
-				            .y(function(d) {
-				                return options.yRange(d.rank);
-				            });
+		        lines
+	        		.on("mousemove", function(d) {
+			            var point = d3.mouse(this),
+			                p = {
+			                    x: point[0],
+			                    y: point[1]
+			                };
+			            var movie = d3.select(this).attr("class").split(" ")[1]
+			            d3.select("#tooltip")
+			                .text(keyData[movie]["standardTitle"])
+			                .style("left", p.x + 375 + "px")
+			                .style("top", p.y - 25 + "px")
+			                .style("opacity", "1");
+			            // .attr("transform", "translate(" + p.x + "," + p.y + ")")
+			            // .style()
+			            d3.select(this)
+			                .style("stroke", "red");
+			        })
 
-				        filteredData.forEach(function(d) {
-				            svg.append("path")
-				                .datum(d.values)
-				                .attr("class", "line " + d.key + " lineFiltered")
-				                .attr("d", lineFiltered);
-				        });
-
-				        var lines = d3.selectAll(".line")
-
-				        lines
-				        		.on("mousemove", function(d) {
-						            var point = d3.mouse(this),
-						                p = {
-						                    x: point[0],
-						                    y: point[1]
-						                };
-						            var movie = d3.select(this).attr("class").split(" ")[1]
-						            d3.select("#tooltip")
-						                .text(key_data[movie]["standard_title"])
-						                .style("left", p.x + 375 + "px")
-						                .style("top", p.y - 25 + "px")
-						                .style("opacity", "1");
-						            // .attr("transform", "translate(" + p.x + "," + p.y + ")")
-						            // .style()
-						            d3.select(this)
-						                .style("stroke", "red");
-						        })
-
-						        .on("mouseout", function(d) {
-						            d3.select("#tooltip")
-						                .style("opacity", "0")
-						            d3.select(this)
-						                .style("stroke", "grey");
-						        });
-		    		});
-		});
+			        .on("mouseout", function(d) {
+			            d3.select("#tooltip")
+			                .style("opacity", "0")
+			            d3.select(this)
+			                .style("stroke", "grey");
+			        });
+    		});
+	});
