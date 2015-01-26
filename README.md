@@ -27,7 +27,7 @@ d3.js visualization of the IMDb Top 250 since its beginning.
   * Simplify data loading
   * Simplify filtering
 13. Fix filtering
-  * When use unfilters, there should be no movies selected
+  * When user unfilters, there should be no movies selected
 14. Try moving to PostgreSQL
 15. Deploy to AWS or Heroku
 16. Create cron job for pulling data each day
