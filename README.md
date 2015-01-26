@@ -16,8 +16,8 @@ d3.js visualization of the IMDb Top 250 since its beginning.
 11. ~~Refactor/clean up Flask code~~
 12. Refactor d3/js
   * ~~Consistent indentation~~
-  * Consistent variable, function case
-  * Consistent use of braces
+  * ~~Consistent variable, function case~~
+  * ~~Consistent use of braces~~
   * Consistent use of chained methods
   * Consistent commenting
   * Get rid of unnecessary code
