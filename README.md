@@ -15,7 +15,20 @@ d3.js visualization of the IMDb Top 250 since its beginning.
 10. ~~Test real data w/ d3~~
 11. ~~Refactor/clean up Flask code~~
 12. Refactor d3/js
-13. Try moving to PostgreSQL
-14. Deploy to AWS or Heroku
-15. Create cron job for pulling data each day
-16. Fix styling of page
+  * ~~Consistent indentation~~
+  * ~~Consistent variable, function case~~
+  * ~~Consistent use of braces~~
+  * ~~Consistent use of chained methods~~
+  * ~~Consistent commenting~~
+  * Get rid of unnecessary code
+  * ~~Divide every section~~
+  * Comment for every function, variable
+  * Simplify drawing graph
+  * Simplify data loading
+  * Simplify filtering
+13. Fix filtering
+  * When user unfilters, there should be no movies selected
+14. Try moving to PostgreSQL
+15. Deploy to AWS or Heroku
+16. Create cron job for pulling data each day
+17. Fix styling of page
