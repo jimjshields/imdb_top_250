@@ -14,14 +14,22 @@ var height = 700 - margin.top - margin.bottom;
 var parseDate = d3.time.format("%Y-%m-%d %X").parse;
 
 var rangeOptions = {
-	xRange: d3.time.scale().range([0, width]),
-	yRange: d3.scale.linear().range([height, 0])
+	xRange: d3.time
+		.scale()
+		.range([0, width]),
+	yRange: d3.scale
+		.linear()
+		.range([height, 0])
 };
 
 // These are defined in terms of rangeOptions so must be defined separately.
 var axisOptions = {
-	xAxis: d3.svg.axis().scale(rangeOptions.xRange).orient("bottom"),
-	yAxis: d3.svg.axis().scale(rangeOptions.yRange).orient("left")
+	xAxis: d3.svg.axis()
+		.scale(rangeOptions.xRange)
+		.orient("bottom"),
+	yAxis: d3.svg.axis()
+		.scale(rangeOptions.yRange)
+		.orient("left")
 };
 
 // stores a d3 line that is bound to scaled data - it's called below (after data is loaded)
@@ -31,11 +39,12 @@ var line = d3.svg.line()
 	    .y(function(d) { return rangeOptions.yRange(d.rank); });
 
 // svg is stored and appended to the body of the html
-var svg = d3.select("#graph").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+var svg = d3.select("#graph")
+	.append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // CHARTING FUNCTION //
 
@@ -60,11 +69,11 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
         .attr("class", "y axis")
         .call(axisOptions.yAxis)
         .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Top 250 Rank");
+	        .attr("transform", "rotate(-90)")
+	        .attr("y", 6)
+	        .attr("dy", ".71em")
+	        .style("text-anchor", "end")
+	        .text("Top 250 Rank");
 
     // loop through the nested data and make a line for every movie
     nest.forEach(function(d) {
@@ -81,7 +90,9 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
                     x: point[0],
                     y: point[1]
                 };
-            var movie = d3.select(this).attr("class").split(" ")[1];
+            var movie = d3.select(this)
+            	.attr("class")
+            	.split(" ")[1];
             d3.select("#tooltip")
                 .text(keyData[movie]["standardTitle"])
                 .style("left", p.x + 375 + "px")
@@ -142,13 +153,13 @@ nest.forEach(function(d) {
 dataTable.forEach(function(d) {
     d3.select("#movieSelection")
         .append("tr")
-        .attr("class", d[0])
+        	.attr("class", d[0])
     for (i = 1; i < d.length; i++) {
         d3.select("." + d[0])
             .append("td")
-            .text(d[i])
-            .style("width", "200px")
-            .style("overflow", "hidden")
+	            .text(d[i])
+	            .style("width", "200px")
+	            .style("overflow", "hidden")
     }
 });
 
@@ -211,8 +222,8 @@ tr
 	    clickedMovies.forEach(function(d) {
 	        d3.select("#clickedMovies")
 	            .append("tr")
-	            .text(d)
-	            .attr("class", titleData[d]);
+		            .text(d)
+		            .attr("class", titleData[d]);
 	    });
 
 	    // highlight lines even more clearly if selected movie is hovered over
@@ -269,11 +280,11 @@ tr
 		            .attr("class", "y axis")
 		            .call(axisOptions.yAxis)
 		            .append("text")
-		            .attr("transform", "rotate(-90)")
-		            .attr("y", 6)
-		            .attr("dy", ".71em")
-		            .style("text-anchor", "end")
-		            .text("Top 250 Rank");
+			            .attr("transform", "rotate(-90)")
+			            .attr("y", 6)
+			            .attr("dy", ".71em")
+			            .style("text-anchor", "end")
+			            .text("Top 250 Rank");
 
 		        // better interpolation for lines when filtered - too slow for the whole graph
 		        var lineFiltered = d3.svg.line()
@@ -298,7 +309,9 @@ tr
 			                    x: point[0],
 			                    y: point[1]
 			                };
-			            var movie = d3.select(this).attr("class").split(" ")[1];
+			            var movie = d3.select(this)
+			            	.attr("class")
+			            	.split(" ")[1];
 			            d3.select("#tooltip")
 			                .text(keyData[movie]["standardTitle"])
 			                .style("left", p.x + 375 + "px")
