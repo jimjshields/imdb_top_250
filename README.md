@@ -18,7 +18,7 @@ d3.js visualization of the IMDb Top 250 since its beginning.
   * ~~Consistent indentation~~
   * ~~Consistent variable, function case~~
   * ~~Consistent use of braces~~
-  * Consistent use of chained methods
+  * ~~Consistent use of chained methods~~
   * Consistent commenting
   * Get rid of unnecessary code
   * Divide every section
