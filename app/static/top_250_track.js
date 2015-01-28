@@ -1,6 +1,6 @@
 // Initialization of Settings //
 
-// Margins for the SVG - height/width defined in terms of margin.
+// Margins for the SVG - height/width are defined in terms of margin.
 var margin = {
 	top: 20,
 	right: 20,
@@ -10,9 +10,10 @@ var margin = {
 var width = (0.7 * window.innerWidth) - margin.left - margin.right;
 var height = 700 - margin.top - margin.bottom;
 
-// Function that parses a date formatted as "YYYY-MM-DD HH:MM:SS".
+// Returns function that parses a date formatted as "YYYY-MM-DD HH:MM:SS".
 var parseDate = d3.time.format("%Y-%m-%d %X").parse;
 
+// Stores the options for the x and y range.
 var rangeOptions = {
 	xRange: d3.time
 		.scale()
@@ -22,6 +23,7 @@ var rangeOptions = {
 		.range([height, 0])
 };
 
+// Stores the options for the x and y axis.
 // These are defined in terms of rangeOptions so must be defined separately.
 var axisOptions = {
 	xAxis: d3.svg.axis()
@@ -32,13 +34,13 @@ var axisOptions = {
 		.orient("left")
 };
 
-// stores a d3 line that is bound to scaled data - it's called below (after data is loaded)
+// Stores a d3 line that can be bound to data and will automatically scale it.
 var line = d3.svg.line()
     .defined(function(d) { return d.rank != null; })
 	    .x(function(d) { return rangeOptions.xRange(d.date); })
 	    .y(function(d) { return rangeOptions.yRange(d.rank); });
 
-// svg is stored and appended to the body of the html
+// Stores the SVG and appends it to the body of the HTML.
 var svg = d3.select("#graph")
 	.append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -46,25 +48,29 @@ var svg = d3.select("#graph")
     .append("g")
     	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// CHARTING FUNCTION //
+// Charting Function //
 
 var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions, axisOptions) {
-    // regardless of what was there, get rid of it and start over
+
+    // Removes what is on the SVG and redraw the chart.
     svg.selectAll("*").remove();
 
+    // Sets the x domain to the date range.
     rangeOptions.xRange.domain(d3.extent(data, function(d) { return d.date; }));
+
+    // Sets the y domain to the reversed rank range (so 1 is on top).
     rangeOptions.yRange.domain([
     	d3.max(data, function(d) { return d.rank; }),
         d3.min(data, function(d) { return d.rank; })
     ]);
 
-    // adding the x axis and all of its attributes
+    // Adds the x axis and all of its attributes.
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(axisOptions.xAxis);
 
-    // adding the y axis and all of its attributes
+    // Adds the y axis and all of its attributes.
     svg.append("g")
         .attr("class", "y axis")
         .call(axisOptions.yAxis)
@@ -75,7 +81,7 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
 	        .style("text-anchor", "end")
 	        .text("Top 250 Rank");
 
-    // loop through the nested data and make a line for every movie
+    // Loops through the nested data and make a line for every movie.
     nest.forEach(function(d) {
         svg.append("path")
             .datum(d.values)
@@ -83,7 +89,10 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
             .attr("d", line);
     });
 
+    // Defines events for all lines.
     d3.selectAll(".line")
+
+    	// Binds each line to a mousemove event that displays an associated tooltip.
         .on("mousemove", function(d) {
             var point = d3.mouse(this);
             var p = {
@@ -104,6 +113,7 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
                 .style("opacity", "1");
         })
 
+        // Binds each line to a mouseout event that removes the tooltip.
 	    .on("mouseout", function(d) {
 	        d3.select("#tooltip")
 	            .style("opacity", "0")
@@ -114,42 +124,46 @@ var drawFullChart = function(data, nest, svg, clickedMovies, line, rangeOptions,
 	    });
 };
 
-// DATA LOADING
+// Data Loading //
 
-// loads data, makes it available to functions below as a set of objects
-// coerces the data types correctly
+// Loads data from a JSON object.
 movieData.forEach(function(d) {
+	// Coerces the data types and forces consistent variable case.
     d.rank = +d.rank;
-    // Keep consistent variable case.
     d.imdbId = d.imdb_id
     d.standardTitle = d.standard_title
     d.date = parseDate(d.date);
 });
 
-// nest the data - make the movies the keys in an array of movie objects
+// FIXME: Shouldn't create multiple data structures for this.
+// Nests the data from the JSON object.
 var nest = d3.nest()
     .key(function(d) { return d.imdbId; })
     .entries(movieData);
 
-// add the combo of key and title to an array of arrays - this could definitely be done better
+// FIXME: Shouldn't create multiple data structures for this.
+// Creates a mapping table between id and title.
 var dataTable = []
 nest.forEach(function(d) {
     dataTable.push([d.key, d.values[0].standardTitle])
 })
 
-// add the combo of title and imdbId to an object - could be done better
+// FIXME: Shouldn't create multiple data structures for this.
+// FIXME: This seems to be the same as above.
+// Creates a mapping table between title and id.
 var titleData = {}
 nest.forEach(function(d) {
     titleData[d.values[0]["standardTitle"]] = d.values[0]["imdbId"]
 });
 
-// add the combo of title and key to an object - could be done better
+// FIXME: Shouldn't create multiple data structures for this.
+// FIXME: Unclear what this does.
 var keyData = {}
 nest.forEach(function(d) {
     keyData[d.values[0]["imdbId"]] = d.values[0]
 });
 
-// for each movie title, add a row to the table
+// Adds a row to the HTML table for each movie.
 dataTable.forEach(function(d) {
     d3.select("#movieSelection")
         .append("tr")
@@ -163,24 +177,29 @@ dataTable.forEach(function(d) {
     }
 });
 
-// call this on opening the page
+// Calls the drawing function upon first visiting the page.
 drawFullChart(movieData, nest, svg, clickedMovies, line, rangeOptions, axisOptions);
 
-// allow the full chart button to draw it again after being filtered
+// HTML Interaction //
+
+// Stores the HTML button.
 var fullChartButton = d3.select("#fullChart")
 
+// On a click, allows the HTML button to draw the chart again after being filtered.
 fullChartButton
 		.on("click", function(d) {
 		    drawFullChart(movieData, nest, svg, clickedMovies, line, rangeOptions, axisOptions);
 		});
 
-// store all of the rows
+// Stores all of the HTML rows.
 var tr = d3.selectAll("tr");
 
-// store anything that's been clicked in an array
+// Stores any currently-clicked movies.
 var clickedMovies = [];
 
-// if you hover over a row, it highlights the line for the movie in the row
+// Filtering Functions //
+
+// Defines events bound to the HTML rows.
 tr
     .on("mousemove", function(d) {
         var movie = d3.select(this).attr("class");
@@ -198,26 +217,26 @@ tr
 	        .style("opacity", "0.5");
 	})
 
-	// if you click on a row, it adds it to the selected movies table
+	// Adds a row's associated movie to the clickedMovies array.
 	.on("click", function(d) {
 	    var movie = d3.select(this).attr("class");
 	    var movieText = d3.select(this).text();
 	    var movieEl = svg.select("." + movie);
 	    var clicked = d3.select(this).attr("class").split(" ")[1];
 
-	    // if it's already been clicked, get rid of it
+	    // Removes from clickedMovies array if movie has already been clicked.
 	    if (clicked == "clicked") {
 	        d3.select(this).classed("clicked", false)
 	        movieEl.classed("lineClicked", false)
 	        clickedMovies.splice(clickedMovies.indexOf(movieText), 1)
-	            // otherwise keep it in there
+	    // Adds to clickedMovies array if movie has not been clicked.
 	    } else {
 	        d3.select(this).classed("clicked", true)
 	        movieEl.classed("lineClicked", true)
 	        clickedMovies.push(movieText)
 	    };
 
-	    // every time one is clicked, rebuild the selected movies
+	    // Rebuilds the clickedMovies HTML table each time a movie is clicked.
 	    d3.selectAll("#clickedMovies > tr").remove()
 	    clickedMovies.forEach(function(d) {
 	        d3.select("#clickedMovies")
@@ -226,9 +245,10 @@ tr
 		            .attr("class", titleData[d]);
 	    });
 
-	    // highlight lines even more clearly if selected movie is hovered over
+	    // Stores the HTML rows of all clicked movies.
 	    var clickedTr = d3.selectAll("#clickedMovies > tr");
 
+	    // Defines events bound to the clicked movie rows.
 	    clickedTr
     		.on("mousemove", function(d) {
 	            var movie = d3.select(this).attr("class");
@@ -241,8 +261,10 @@ tr
 	                .style("stroke", "grey");
 	        });
 
+	    // Stores the HTML filter button.
 	    var filterButton = d3.select("#filter");
 
+	    // Defines events bound to the HTML filter button.
 	    filterButton
     		.on("click", function(d) {
 
@@ -269,13 +291,13 @@ tr
 		        rangeOptions.xRange.domain(d3.extent(dates));
 		        rangeOptions.yRange.domain([d3.max(ranks), d3.min(ranks)]);
 
-		        // adding the x axis and all of its attributes
+		        // Adds the x axis and all of its attributes.
 		        svg.append("g")
 		            .attr("class", "x axis")
 		            .attr("transform", "translate(0," + height + ")")
 		            .call(axisOptions.xAxis);
 
-		        // adding the y axis and all of its attributes
+		        // Adds the y axis and all of its attributes.
 		        svg.append("g")
 		            .attr("class", "y axis")
 		            .call(axisOptions.yAxis)
@@ -286,13 +308,15 @@ tr
 			            .style("text-anchor", "end")
 			            .text("Top 250 Rank");
 
-		        // better interpolation for lines when filtered - too slow for the whole graph
+		        // Stores the options for the filtered lines.
 		        var lineFiltered = d3.svg.line()
 		            .defined(function(d) { return d.rank != null; })
+		            // Forces cleaner interpolation of filtered lines.
 		            .interpolate("basis")
 		            .x(function(d) { return rangeOptions.xRange(d.date); })
 		            .y(function(d) { return rangeOptions.yRange(d.rank); });
 
+		        // Loops through the filtered data and make a line for every movie.
 		        filteredData.forEach(function(d) {
 		            svg.append("path")
 		                .datum(d.values)
@@ -300,8 +324,10 @@ tr
 		                .attr("d", lineFiltered);
 		        });
 
+		        // Stores the filtered lines.
 		        var lines = d3.selectAll(".line");
 
+		        // Defines events bound to the filtered lines.
 		        lines
 	        		.on("mousemove", function(d) {
 			            var point = d3.mouse(this),
